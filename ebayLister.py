@@ -6,6 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.expected_conditions import presence_of_element_located
 from selenium.webdriver.chrome.options import Options
+import requests
 
 import time
 import urllib.request
@@ -44,79 +45,27 @@ warnings = []
 
 search_terms = [
     '9326314015709',
-    '9398700026019',
-    '9398523225033',
-    '9321337173702',
-    '9317731056406',
-    '9398522127031',
-    '5050582781458',
-    '5050582566499',
-    '9317731057694',
-    '9317731042478',
-    '9398523280032',
-    '9337874001231',
-    '9317731041921',
-    '9317731004148',
-    '9418212007891',
-    '9317206031587',
-    '9338683006264',
-    '9321337068671',
-    '9326314013378',
-    '9397810199699',
-    '9317731003042',
-    '5021456171941',
-    '9317731127137',
-    '5050583010526',
-    '9325336125304',
-    '9335522035232',
-    '9315841999033',
-    '5021456171958',
-    '9325336016862',
-    '9325336011317',
-    '9397911243291',
-    '9321337042411',
-    '725906473795',
-    '9321337037615',
-    '9317731139963',
-    '9326314010742',
-    '9398520576039',
-    '9398710741094',
-    '9326314000989',
-    '9398710740899',
-    '9324915050587',
-    '9324915050044',
-    '9398522237037',
-    '9315842015169',
-    '9398521585030',
-    '9317206017581',
-    '9397810259096',
-    '9324915082236',
-    '9337874021390',
-    '9317731054716',
-    '9325425025102',
-    '9337874001262',
-    '9398522219033',
-    '9398710625691',
-    '9325336135532',
-    '9398510622036',
-    '9418212006856',
-    '9398710177190',
-    '9337874001590',
-    '5050582770179',
-    '9317731075742',
-    '9398521009031',
-    '9397810051393',
-    '9317485442388',
-    '9321337099149',
-    '9398710893298',
-    '8717418270582',
-    '9324915054455',
-    '9418212006467',
-    '9320314005210',
 ]
 
 
-def createListing(searchTerm, cexTitleText, cexImageUrl, booktopiaImageUrl):
+def storeData(searchTerm, title, cexImageUrl, booktopiaImageUrl, cexSell, cexBuy, cexTrade):
+
+    payload = {
+        'barcode': int(searchTerm),
+        'title': title,
+        'cexPhotoUrl': cexImageUrl,
+        'booktopiaPhotoUrl': booktopiaImageUrl,
+        'cexSell': cexSell,
+        'cexBuy': cexBuy,
+        'cexTrade': cexTrade
+    }
+
+    print(payload)
+
+    requests.post('http://127.0.0.1:8000/api/dvd/', data=payload)
+
+
+def createListing(searchTerm, cexTitleText, cexImageUrl, booktopiaImageUrl, cexSell, cexBuy, cexTrade):
 
     # Open ebay listing page
     url = 'https://bulksell.ebay.com.au/ws/eBayISAPI.dll?SingleList&&DraftURL=https://www.ebay.com.au/sh/lst/drafts&ReturnURL=https://www.ebay.com.au/sh/lst/drafts&sellingMode=AddItem&templateId=6123526019'
@@ -139,18 +88,18 @@ def createListing(searchTerm, cexTitleText, cexImageUrl, booktopiaImageUrl):
     sku = driver.find_element_by_id('editpane_skuNumber')
     sku.send_keys('E13')
 
+    title = cexTitleText.split(
+        ' | DVD Region 4 (PAL) (Australia) | Free Post', 1)[0]
+
     # Item specifics - DVD Title
     try:
         itemSpecificTitle = driver.find_element_by_id(
             'Listing.Item.ItemSpecific[Movie/TV Title]')
         itemSpecificTitle.clear()
-        title = cexTitleText.split(
-            ' | DVD Region 4 (PAL) (Australia) | Free Post', 1)[0]
         itemSpecificTitle.send_keys(title)
     except:
         print('')
 
-   
     # ---Photo---1
     # Select the right mini-screen
     iframes = driver.find_elements_by_tag_name('iframe')
@@ -192,8 +141,11 @@ def createListing(searchTerm, cexTitleText, cexImageUrl, booktopiaImageUrl):
         """)
     time.sleep(3)
 
+    storeData(searchTerm, title, cexImageUrl,
+              booktopiaImageUrl, cexSell, cexBuy, cexTrade)
 
-def scrapeBooktopia(searchTerm, cexTitleText, cexImageUrl):
+
+def scrapeBooktopia(searchTerm, cexTitleText, cexImageUrl, cexSell, cexBuy, cexTrade):
     time.sleep(2)
     # Send to soup
     source = driver.page_source
@@ -211,10 +163,11 @@ def scrapeBooktopia(searchTerm, cexTitleText, cexImageUrl):
         print('No booktopia results')
 
     print('Booktopia Url: ' + booktopiaImageUrl)
-    createListing(searchTerm, cexTitleText, cexImageUrl, booktopiaImageUrl)
+    createListing(searchTerm, cexTitleText, cexImageUrl,
+                  booktopiaImageUrl, cexSell, cexBuy, cexTrade)
 
 
-def searchBooktopia(searchTerm, cexTitleText, cexImageUrl):
+def searchBooktopia(searchTerm, cexTitleText, cexImageUrl, cexSell, cexBuy, cexTrade):
     # Retrive url in headless browser
     driver.get('https://www.booktopia.com.au/')
 
@@ -224,7 +177,8 @@ def searchBooktopia(searchTerm, cexTitleText, cexImageUrl):
 
     time.sleep(2)
 
-    scrapeBooktopia(searchTerm, cexTitleText, cexImageUrl)
+    scrapeBooktopia(searchTerm, cexTitleText, cexImageUrl,
+                    cexSell, cexBuy, cexTrade)
 
 
 def scrapeCex(searchTerm):
@@ -260,12 +214,18 @@ def scrapeCex(searchTerm):
 
     cexCashPrice = cexCashPrice.split('$', 1)[1].strip()
     cexTradePrice = cexTradePrice.split('$', 1)[1].strip()
+    cexSellPrice = cexSellPrice.split('$', 1)[1].strip()
 
     if (float(cexCashPrice) >= 1) or (float(cexTradePrice) >= 1):
         warnings.append('CEX Buys ' + splitText + 'for cash $' +
                         cexCashPrice + ' or trade $' + cexTradePrice)
 
-    searchBooktopia(searchTerm, cexTitleText, cexImageUrl)
+    cexSell = float(cexSellPrice)
+    cexBuy = float(cexCashPrice)
+    cexTrade = float(cexTradePrice)
+
+    searchBooktopia(searchTerm, cexTitleText, cexImageUrl,
+                    cexSell, cexBuy, cexTrade)
 
 
 def searchCex(searchTerm):
@@ -293,9 +253,6 @@ def summaryPrintOut():
     print('There are ' + str(len(errors)) + ' errors')
     print('There are ' + str(len(warnings)) + ' warnings')
     print('***********************************************')
-    print('-------------ERRORS-------------')
-    for error in errors:
-        print(error)
     print('-------------WARNINGS-------------')
     for warning in warnings:
         print(warning)
