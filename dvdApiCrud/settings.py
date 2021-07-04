@@ -38,7 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'dvdapi'
+    # Dependencies
+    'rest_framework',
+
+    # Modules
+    'dvdapi',
 ]
 
 MIDDLEWARE = [
@@ -77,8 +81,11 @@ WSGI_APPLICATION = 'dvdApiCrud.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dvdapi',
+        'USER': 'postgres',
+        'PASSWORD': 'admin',
+        'HOST': 'localhost',
     }
 }
 
