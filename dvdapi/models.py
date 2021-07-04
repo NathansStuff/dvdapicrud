@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Dvd(models.Model):
-    barcode = models.DecimalField(max_digits=20, decimal_places=0)
+    barcode = models.DecimalField(max_digits=20, decimal_places=0, unique=True)
     title = models.CharField(max_length=200)
     cexPhotoUrl = models.CharField(max_length=200)
     booktopiaPhotoUrl = models.CharField(max_length=200)
