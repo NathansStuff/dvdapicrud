@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'dvdApiCrud.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dvdapi',
+        'NAME': 'dvdapi2',
         'USER': 'postgres',
         'PASSWORD': 'admin',
         'HOST': 'localhost',
