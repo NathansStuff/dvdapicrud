@@ -16,6 +16,8 @@ import os
 
 # Step 1: Run the script to open new webbrowser instance. Log in.
 # chrome.exe -remote-debugging-port=9014 --user-data-dir="C:\Selednium\Chrome_Test_Profile"
+# Step 2: Run the database to log the results for later use
+# python manage.py runserver
 
 # Configuring the driver
 chrome_options = Options()
@@ -44,7 +46,43 @@ errors = []
 warnings = []
 
 search_terms = [
-    '9326314015709',
+    '9317731086793',
+    '5050582782516',
+    '9397810148598',
+    '9321337052786',
+    '9317731058967',
+    '9317731062131',
+    '9398710602890',
+    '9321337038841',
+    '3259190237490',
+    '9325336029169',
+    '9321337040097',
+    '9398522779032',
+    '9338683000972',
+    '9324915091146',
+    '9322225088344',
+    '9321337164113',
+    '9398512977233',
+    '9398520198033',
+    '9317206015280',
+    '5050582566505',
+    '9397910896795',
+    '9325336189795',
+    '9325336012116',
+    '033937038457',
+    '9398710409291',
+    '9321337088594',
+    '9338683000521',
+    '9325336017593',
+    '5050582082333',
+    '9397910781091',
+    '9318500063779',
+    '9325336013489',
+    '9326314002976',
+    '9398521051030',
+    '9398711466897',
+    '9325425011440',
+    '9326314002976',
 ]
 
 
@@ -59,8 +97,6 @@ def storeData(searchTerm, title, cexImageUrl, booktopiaImageUrl, cexSell, cexBuy
         'cexBuy': cexBuy,
         'cexTrade': cexTrade
     }
-
-    print(payload)
 
     requests.post('http://127.0.0.1:8000/api/dvd/', data=payload)
 
@@ -86,7 +122,7 @@ def createListing(searchTerm, cexTitleText, cexImageUrl, booktopiaImageUrl, cexS
 
     # Ebay forgets SKU as it populates from barcode; resend SKU
     sku = driver.find_element_by_id('editpane_skuNumber')
-    sku.send_keys('E13')
+    sku.send_keys('E33')
 
     title = cexTitleText.split(
         ' | DVD Region 4 (PAL) (Australia) | Free Post', 1)[0]
