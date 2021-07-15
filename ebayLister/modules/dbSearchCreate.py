@@ -1,8 +1,9 @@
-from driver import createDriver
-from searchDatabase import searchDatabase
-from cex import scrapeCex
-from booktopia import scrapeBooktopia
-from postData import postData
+from modules.driver import createDriver
+from modules.searchDatabase import searchDatabase
+from modules.cex import scrapeCex
+from modules.booktopia import scrapeBooktopia
+from modules.postData import postData
+
 
 def dbSearchCreate(search_terms):
     driver = createDriver()
@@ -39,7 +40,7 @@ def dbSearchCreate(search_terms):
 
                 # 4 - Post to database
                 dbResponse = postData(term, title, cexImageUrl,
-                                    booktopiaImageUrl, cexSell, cexBuy, cexTrade)
+                                      booktopiaImageUrl, cexSell, cexBuy, cexTrade)
                 if dbResponse.status_code == 201:
                     print('Successfully stored data in db')
                 else:

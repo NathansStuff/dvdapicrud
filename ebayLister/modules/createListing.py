@@ -51,7 +51,7 @@ def createListing(driver, searchTerm, customLabel, title, cexImageUrl, booktopia
         driver.switch_to.default_content()  # Exit iframe
         time.sleep(3)
 
-        if booktopiaImageUrl != '':
+        if booktopiaImageUrl != '' & booktopiaImageUrl != 'na':
             # Photo 2
             # Select the right mini-screen
             iframes = driver.find_elements_by_tag_name('iframe')
